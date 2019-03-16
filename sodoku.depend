@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1552745794 source:c:\users\oszto\desktop\sodoku\main.cpp
+	<iostream>
+	"sodoku.h"
+
+1552744166 c:\users\oszto\desktop\sodoku\include\sodoku.h
+	<fstream>
+	<iostream>
+	<bitset>
+	<vector>
+
+1552754363 source:c:\users\oszto\desktop\sodoku\src\sodoku.cpp
+	"sodoku.h"
+
