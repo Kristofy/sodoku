@@ -7,13 +7,13 @@ int main(int argc, char *argv[])
 {
     cout<<"made by Osztopani Kristof"<<endl;
     string path;
-    cout<<"argc: "<<argc<<endl;
+    //cout<<"argc: "<<argc<<endl;
     if(argc==1){
     cout<<"Please give the path and the extension(.txt) : ";
     cin>>path;
     }else{
         path=argv[1];
-       cout<<"path: "<<path<<endl;
+      // cout<<"path: "<<path<<endl;
     }
     Sodoku sodoku(path);
     sodoku.printArray();
