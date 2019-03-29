@@ -1,0 +1,40 @@
+# depslib dependency file v1.0
+1552745794 source:c:\users\oszto\desktop\sodoku\main.cpp
+	<iostream>
+	"sodoku.h"
+
+1552744166 c:\users\oszto\desktop\sodoku\include\sodoku.h
+	<fstream>
+	<iostream>
+	<bitset>
+	<vector>
+
+1552754363 source:c:\users\oszto\desktop\sodoku\src\sodoku.cpp
+	"sodoku.h"
+
+1552802034 source:c:\users\osztopani.kristof\desktop\sodoku-master\main.cpp
+	<iostream>
+	"sodoku.h"
+
+1552802034 c:\users\osztopani.kristof\desktop\sodoku-master\include\sodoku.h
+	<fstream>
+	<iostream>
+	<bitset>
+	<vector>
+
+1552802034 source:c:\users\osztopani.kristof\desktop\sodoku-master\src\sodoku.cpp
+	"sodoku.h"
+
+1553890186 source:h:\hide\sodoku-master\main.cpp
+	<iostream>
+	"sodoku.h"
+
+1553889914 h:\hide\sodoku-master\include\sodoku.h
+	<fstream>
+	<iostream>
+	<bitset>
+	<vector>
+
+1553889914 source:h:\hide\sodoku-master\src\sodoku.cpp
+	"sodoku.h"
+
