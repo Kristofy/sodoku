@@ -1,6 +1,7 @@
 #include <iostream>
 #include "sodoku.h"
 
+
 bool LOG=0;
 
 using namespace std;

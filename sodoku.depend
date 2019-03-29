@@ -12,6 +12,7 @@
 1552754363 source:c:\users\oszto\desktop\sodoku\src\sodoku.cpp
 	"sodoku.h"
 
+<<<<<<< HEAD
 1552802034 source:c:\users\osztopani.kristof\desktop\sodoku-master\main.cpp
 	<iostream>
 	"sodoku.h"
@@ -38,3 +39,5 @@
 1553889914 source:h:\hide\sodoku-master\src\sodoku.cpp
 	"sodoku.h"
 
+=======
+>>>>>>> 86a521bdcf538b063fd75885dbb7e3184c933cb5

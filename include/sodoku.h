@@ -6,6 +6,7 @@
 #include <bitset>
 #include <vector>
 
+
 #define LG if(LOG) // if log is on write how it was solved
 #define boxIndex(i,k) (i/3)*3+((k/3)%3)
 
@@ -33,13 +34,15 @@ class Sodoku
         bool possibleRow();
         bool possibleColumn();
         bool possibleBox();
+
         bool onlyThere();
         bool nowhereElseInRow();
         bool nowhereElseInColumn();
         bool nowhereElseInBox();
-        bool canGo(int i,int k, int value);
 
+        bool canGo(int i,int k, int value);
         void update();
+
         int onlyInBox(int i);
         int onlyInRow(int i);
         int onlyInColumn(int i);

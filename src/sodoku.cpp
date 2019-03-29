@@ -332,8 +332,7 @@ bool Sodoku::possibleColumn()
         guess=onlyInColumn(i);
         if(guess)
         {
-            for(int k=0; k<9; ++k)
-            {
+            for(int k=0; k<9; ++k){
                 if(fields[k][i]==0&&canGo(k,i,guess))
                 {
                     fields[k][i]=guess;
