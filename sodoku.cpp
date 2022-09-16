@@ -284,22 +284,11 @@ bool Sodoku::possibleRow()
 
 bool Sodoku::possibleColumn()
 {
-    int guess;
-    for(int i=0; i<9; i++)
-    {
-        guess=onlyInColumn(i);
-        if(guess)
-        {
-            for(int k=0; k<9; ++k){
-                if(fields[k][i]==0&&canGo(k,i,guess))
-                {
-                    guessNumber(k, i, guess);
-                    return true;
-                }
-            }
-        }
+    for(int i=0; i<9; i++) {
+        int guess=onlyInColumn(i);
+        if(guess) guessNumber(col_positions[i].first(), i, guess);
     }
-    return false;
+    return guessed;
 }
 
 void Sodoku::update()
@@ -340,29 +329,10 @@ bool Sodoku::isDone(){
 
 int Sodoku::onlyInColumn(int i)
 {
-    bool only=true;
-    int guess=0;
-    for(int k=0; k<9; ++k)
-    {
-        if(cols[i][k])
-        {
-            if(only)
-            {
-                guess=k+1;
-                only=false;
-            }
-            else
-            {
-                guess=0;
-                break;
-            }
-        }
-    }
-    return guess;
+    return cols[i].count() == 1 ? cols[i].first() + 1 : 0; 
 }
 
 int Sodoku::onlyInRow(int i) const {
-    cout << "in row: " << i << " there are: " << std::bitset<9>(rows[i].getBits()).to_string() << " so the ans is: " << (rows[i].count() == 1 ? rows[i].first() + 1 : 0) << std::endl;
     return rows[i].count() == 1 ? rows[i].first() + 1 : 0;
 }
 

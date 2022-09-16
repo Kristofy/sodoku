@@ -69,15 +69,18 @@ class Sodoku
         void guessNumber(int y, int x, int number) {
             if(!canGo(y, x, number)) {
                 std::cerr << "Error! Number missplaced!" << std::endl;
+                std::cerr << "Tried to place " << number << " at " << y + 1 << " "  << x + 1 << std::endl;
+                printArray();
+                std::cout << std::flush;
             }
 
 
             fields[y][x] = number;
             row_positions[y].unset(x);
             col_positions[x].unset(y);
-            rows[y].set(number);
-            cols[x].set(number);
-            boxes[boxIndex(y, x)].set(number);
+            rows[y].set(number-1);
+            cols[x].set(number-1);
+            boxes[boxIndex(y, x)].set(number-1);
 
             guessed = true;
         }
