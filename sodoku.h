@@ -9,8 +9,6 @@
 
 
 
-#define boxIndex(i,k) (i/3)*3+((k/3)%3)
-
 struct fast_bitset {
     private:
         int bits;
@@ -31,7 +29,6 @@ struct fast_bitset {
         void unset(int i) { bits &= ~(1<<i); }
         void flip(int i) { bits ^= 1<<i; }
 
-
         fast_bitset operator&(const fast_bitset& other) const { return bits & other.bits; }
 };
 
@@ -45,7 +42,7 @@ class Sodoku
 
         bool isDone();
 
-        void printArray();
+        void printArray() const;
         void solve();
 
     private:
@@ -85,9 +82,9 @@ class Sodoku
             col_positions[x].unset(y);
             box_positions[o].unset(i);
 
-            rows[y].set(number-1);
-            cols[x].set(number-1);
-            boxes[o].set(number-1);
+            rows[y].unset(number-1);
+            cols[x].unset(number-1);
+            boxes[o].unset(number-1);
 
             guessed = true;
         }
@@ -96,6 +93,11 @@ class Sodoku
         static std::tuple<int, int> boxTransform(int i, int j) {
             return {i / 3 * 3 + j / 3, i % 3 * 3 + j % 3};
         }
+
+        const Sodoku& save() {
+            return (*this);
+        }
+
 
         bool guessed = false;
         int fields[9][9];
