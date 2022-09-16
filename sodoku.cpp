@@ -227,49 +227,19 @@ bool Sodoku::onlyThere()
 
 bool Sodoku::possibleBox()
 {
-    int guess;
-    for(int i=0; i<9; i++)
-    {
-        guess=onlyInBox(i);
-        if(guess)
-        {
-            for(int k=0; k<9; ++k)
-            {
-                ///if(fields[(mi/3)+(index/3)*3][(mi%3)+(index%3)*3]
-                ///I dont think so
-                if(fields[((i/3)*3)+k/3][((i%3)*3)+k%3]==0&&canGo((((i/3)*3)+k/3),((i%3)*3)+k%3,guess))
-                {
-                    guessNumber(((i/3)*3)+k/3, ((i%3)*3)+k%3, guess);
-                    return true;
-                }
-            }
-            break;
+    for(int i=0; i<9; i++) {
+        int guess = onlyInBox(i);
+        if(guess) {
+            auto[y, x] = boxTransform(i, box_positions[i].first());
+            guessNumber(y, x, guess);
         }
     }
-    return false;
+    return guessed;
 }
 
 int Sodoku::onlyInBox(int i)
 {
-    bool only=true;
-    int guess;
-    for(int k=0; k<9; ++k)
-    {
-        if(boxes[i][k])
-        {
-            if(only)
-            {
-                guess=k+1;
-                only=false;
-            }
-            else
-            {
-                guess=0;
-                break;
-            }
-        }
-    }
-    return guess;
+    return boxes[i].count() == 1 ? boxes[i].first() + 1 : 0;
 }
 
 
@@ -299,8 +269,11 @@ void Sodoku::update()
         {
             if(fields[i][k]!=0)
             {
+                auto[outer, inner] = boxTransform(i, k);
+
                 row_positions[i].unset(k);
                 col_positions[k].unset(i);
+                box_positions[outer].unset(inner);
                 rows[i].unset(fields[i][k]-1);
                 cols[k].unset(fields[i][k]-1);
                 boxes[boxIndex(i,k)].unset(fields[i][k]-1);
@@ -338,13 +311,14 @@ int Sodoku::onlyInRow(int i) const {
 
 Sodoku::Sodoku() {
     for(int i=0; i<9; ++i)
-       rows[i]=cols[i]=boxes[i]=row_positions[i]=col_positions[i]=0b111111111;
+       rows[i]=cols[i]=boxes[i]=row_positions[i]=col_positions[i]=box_positions[i]=0b111111111;
 }
 
 Sodoku::Sodoku(string path)
 {
     for(int i=0; i<9; ++i)
-        rows[i]=cols[i]=boxes[i]=row_positions[i]=col_positions[i]=0b111111111;
+        rows[i]=cols[i]=boxes[i]=row_positions[i]=col_positions[i]=box_positions[i]=0b111111111;
+
 
     ifstream fin(path);
     if(!fin.is_open())

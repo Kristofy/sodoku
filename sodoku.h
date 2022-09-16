@@ -5,6 +5,8 @@
 #include <iostream>
 #include <bitset>
 #include <vector>
+#include <tuple>
+
 
 
 #define boxIndex(i,k) (i/3)*3+((k/3)%3)
@@ -72,23 +74,34 @@ class Sodoku
                 std::cerr << "Tried to place " << number << " at " << y + 1 << " "  << x + 1 << std::endl;
                 printArray();
                 std::cout << std::flush;
+                abort();
             }
 
+            auto[o, i] = boxTransform(y, x);
 
             fields[y][x] = number;
+
             row_positions[y].unset(x);
             col_positions[x].unset(y);
+            box_positions[o].unset(i);
+
             rows[y].set(number-1);
             cols[x].set(number-1);
-            boxes[boxIndex(y, x)].set(number-1);
+            boxes[o].set(number-1);
 
             guessed = true;
+        }
+
+        // it's both the transform and the inverse transform from box to coordinate space
+        static std::tuple<int, int> boxTransform(int i, int j) {
+            return {i / 3 * 3 + j / 3, i % 3 * 3 + j % 3};
         }
 
         bool guessed = false;
         int fields[9][9];
         bitset row_positions[9];
         bitset col_positions[9];
+        bitset box_positions[9];
         bitset rows[9];
         bitset cols[9];
         bitset boxes[9];
