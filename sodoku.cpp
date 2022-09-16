@@ -130,37 +130,10 @@ bool Sodoku::nowhereElseInColumn()
 
 bool Sodoku::canGo(int i,int k, int value)
 {
-    if(fields[i][k]!=0)
-    {
-        return false;
-    }
-    for(int mi=0; mi<9; ++mi)
-    {
-        if(fields[mi][k]==value)
-        {
-            return false;
-        }
-    }
-    for(int mk=0; mk<9; ++mk)
-    {
-        if(fields[i][mk]==value)
-        {
-            return false;
-        }
-    }
-
-    auto[index, _] = boxTransform(i,k);
-    for(int mi=0; mi<9; ++mi)
-    {
-        //  cout<<"fields value:: "<<(mi/3)+(index/3)*3<<" "<<(mi%3)+(index%3)*3<<" "<<fields[(mi/3)+(index/3)*3][(mi%3)+(index%3)*3]<<endl;
-        if(fields[(mi/3)+(index/3)*3][(mi%3)+(index%3)*3]==value)
-        {
-            return false;
-        }
-    }
-
-    return true;
-
+    return !fields[i][k]
+        && cols[k][value]
+        && rows[i][value]
+        && boxes[get<0>(boxTransform(i,k))][value];
 }
 
 vector<int> Sodoku::getNumFromBitset(const bitset& convertable)
