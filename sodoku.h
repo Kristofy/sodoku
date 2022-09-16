@@ -7,20 +7,36 @@
 #include <vector>
 
 
-#define LG if(LOG) // if log is on write how it was solved
 #define boxIndex(i,k) (i/3)*3+((k/3)%3)
 
-using namespace std;
+struct fast_bitset {
+    private:
+        int bits;
+    public: 
+        fast_bitset() {}
+        fast_bitset(int x) :bits(x) {}
 
-extern bool LOG;
+        int count() const { return __builtin_popcount(bits); }
+        int first() const { return __builtin_ctz(bits); }   
+        int getBits() const { return bits; }
+        
+        bool operator[](int i) const { return (bits&(1<<i)) != 0; }
 
-vector<int> getNumFromBitset(const bitset<9>& convertable);
+        void set(int i) { bits |= 1<<i; }
+        void unset(int i) { bits &= ~(1<<i); }
+        void flip(int i) { bits ^= 1<<i; }
+
+        fast_bitset operator&(const fast_bitset& other) const { return bits & other.bits; }
+
+};
 
 class Sodoku
 {
+    using bitset = fast_bitset;
+
     public:
         Sodoku();
-        Sodoku(string path);
+        Sodoku(std::string path);
 
         bool isDone();
 
@@ -29,7 +45,7 @@ class Sodoku
 
     private:
 
-        friend vector<int> getNumFromBitset(const bitset<9>& convertable);
+        static std::vector<int> getNumFromBitset(const bitset& convertable);
 
         bool possibleRow();
         bool possibleColumn();
@@ -44,13 +60,13 @@ class Sodoku
         void update();
 
         int onlyInBox(int i);
-        int onlyInRow(int i);
+        int onlyInRow(int i) const;
         int onlyInColumn(int i);
 
         int fields[9][9];
-        bitset<9> rows[9];
-        bitset<9> cols[9];
-        bitset<9> boxes[9];
+        bitset rows[9];
+        bitset cols[9];
+        bitset boxes[9];
 };
 
 #endif // SODOKU_H

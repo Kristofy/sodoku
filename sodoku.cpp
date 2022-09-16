@@ -1,38 +1,17 @@
 #include "sodoku.h"
 
+using namespace std;
+
 void Sodoku::solve()
 {
-    while(true)
-    {
-        update();
-        //printArray();
-        //system("pause")
-        if(possibleRow()){
-            continue;
-        }
-        if(possibleColumn()){
-            continue;
-        }
-        if(possibleBox()){
-            continue;
-        }
-        if(onlyThere()){
-            continue;
-        }
-        if(nowhereElseInRow()){
-            continue;
-        }
-        if(nowhereElseInColumn())
-        {
-            continue;
-        }
-
-        if(nowhereElseInBox())
-        {
-            continue;
-        }
-        break;
-    }
+    for(bool status = true; status; update())
+        status = possibleRow()
+        || possibleColumn()
+        || possibleBox()
+        || onlyThere()
+        || nowhereElseInRow()
+        || nowhereElseInColumn()
+        || nowhereElseInBox();
 }
 
 bool Sodoku::nowhereElseInRow()
@@ -43,7 +22,6 @@ bool Sodoku::nowhereElseInRow()
     for(int i=0; i<9; ++i)
     {
         nums=getNumFromBitset(rows[i]);
-
         for(int j=0; j<nums.size(); ++j)
         {
             for(int k=0; k<9; ++k)
@@ -63,8 +41,6 @@ bool Sodoku::nowhereElseInRow()
             if(only==1)
             {
                 fields[i][index]=nums[j];
-                LG
-                cout<<"guess in nowhereElseInRow: "<<nums[j]<<endl;
                 return true;
             }
             only=0;
@@ -105,8 +81,6 @@ bool Sodoku::nowhereElseInBox()
             if(only==1)
             {
                 fields[indexI][indexK]=nums[j];
-                LG
-                cout<<"guess in nowhereElseInBox: "<<nums[j]<<endl;
                 return true;
             }
             only=0;
@@ -143,8 +117,6 @@ bool Sodoku::nowhereElseInColumn()
             if(only==1)
             {
                 fields[index][i]=nums[j];
-                LG
-                cout<<"guess in nowhereElseInColumn: "<<nums[j]<<endl;
                 return true;
             }
             only=0;
@@ -188,12 +160,12 @@ bool Sodoku::canGo(int i,int k, int value)
 
 }
 
-vector<int> getNumFromBitset(const bitset<9>& convertable)
+vector<int> Sodoku::getNumFromBitset(const bitset& convertable)
 {
     vector<int> v;
     for(int i=0; i<9; ++i)
     {
-        if(convertable.to_ulong()&(1<<i))
+        if(convertable[i])
         {
             v.push_back(i+1);
         }
@@ -203,7 +175,7 @@ vector<int> getNumFromBitset(const bitset<9>& convertable)
 
 bool Sodoku::onlyThere()
 {
-    unsigned long possibilities=0;
+    int possibilities=0;
     bool only;
     int guess=0;
     for(int i=0; i<9; ++i)
@@ -212,7 +184,7 @@ bool Sodoku::onlyThere()
         {
             if(fields[i][k]==0)
             {
-                possibilities=((rows[i]&cols[k])&boxes[boxIndex(i,k)]).to_ulong();
+                possibilities=((rows[i]&cols[k])&boxes[boxIndex(i,k)]).getBits();
                 if(possibilities)
                 {
                     only=true;
@@ -236,8 +208,6 @@ bool Sodoku::onlyThere()
                     {
                         if(canGo(i,k,guess))
                         {
-                            LG
-                            cout<<"guess in onlyThere: "<<guess<<endl;
                             fields[i][k]=guess;
                             return true;
                         }
@@ -266,8 +236,6 @@ bool Sodoku::possibleBox()
                 if(fields[((i/3)*3)+k/3][((i%3)*3)+k%3]==0&&canGo((((i/3)*3)+k/3),((i%3)*3)+k%3,guess))
                 {
                     fields[((i/3)*3)+k/3][((i%3)*3)+k%3]=guess;
-                    LG
-                    cout<<"guess in possibeBox: "<<guess<<endl;
                     return true;
                 }
             }
@@ -314,8 +282,6 @@ bool Sodoku::possibleRow()
                 if(fields[i][k]==0&&canGo(i,k,guess))
                 {
                     fields[i][k]=guess;
-                    LG
-                    cout<<"guess in possibeRow: "<<guess<<endl;
                     return true;
                 }
             }
@@ -336,8 +302,6 @@ bool Sodoku::possibleColumn()
                 if(fields[k][i]==0&&canGo(k,i,guess))
                 {
                     fields[k][i]=guess;
-                    LG
-                    cout<<"guess in possibeColumn: "<<guess<<endl;
                     return true;
                 }
             }
@@ -354,9 +318,9 @@ void Sodoku::update()
         {
             if(fields[i][k]!=0)
             {
-                rows[i][fields[i][k]-1]=0;
-                cols[k][fields[i][k]-1]=0;
-                boxes[boxIndex(i,k)][fields[i][k]-1]=0;
+                rows[i].unset(fields[i][k]-1);
+                cols[k].unset(fields[i][k]-1);
+                boxes[boxIndex(i,k)].unset(fields[i][k]-1);
             }
         }
     }
@@ -403,8 +367,10 @@ int Sodoku::onlyInColumn(int i)
     return guess;
 }
 
-int Sodoku::onlyInRow(int i)
+int Sodoku::onlyInRow(int i) const
 {
+    const bitset& row = rows[i];
+
     bool only=true;
     int guess=0;
     for(int k=0; k<9; ++k)
