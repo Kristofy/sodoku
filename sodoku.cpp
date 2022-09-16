@@ -17,8 +17,7 @@ void Sodoku::solve()
     }
 }
 
-bool Sodoku::nowhereElseInRow()
-{
+bool Sodoku::nowhereElseInRow() {
     vector<int> nums;
     int only=0;
     int index=0;
@@ -177,11 +176,7 @@ vector<int> Sodoku::getNumFromBitset(const bitset& convertable)
     return v;
 }
 
-bool Sodoku::onlyThere()
-{
-    int possibilities=0;
-    bool only;
-    int guess=0;
+bool Sodoku::onlyThere() {
     for(int i = 0; i < 9; i++) {
         for(int k = 0; k < 9; k++) {
             if(fields[i][k] == 0) {
@@ -197,68 +192,35 @@ bool Sodoku::onlyThere()
     return false;
 }
 
-bool Sodoku::possibleBox()
-{
+bool Sodoku::possibleBox() {
     for(int i=0; i<9; i++) {
-        int guess = onlyInBox(i);
-        if(guess) {
+        if(boxes[i].count() == 1) {
             auto[y, x] = boxTransform(i, box_positions[i].first());
-            guessNumber(y, x, guess);
+            guessNumber(y, x, boxes[i].first() + 1);
             return true;
         }
     }
     return false;
 }
 
-int Sodoku::onlyInBox(int i)
-{
-    return boxes[i].count() == 1 ? boxes[i].first() + 1 : 0;
+bool Sodoku::possibleRow() {
+    for(int i = 0; i < 9; i++) {
+        if(rows[i].count() == 1) {
+            guessNumber(i, row_positions[i].first(), rows[i].first() + 1);
+            return true;
+        }
+    }
+    return false;
 }
 
-
-bool Sodoku::possibleRow()
-{
+bool Sodoku::possibleColumn() {
     for(int i=0; i<9; i++) {
-        int guess=onlyInRow(i);
-        if(guess) {
-            guessNumber(i, row_positions[i].first(), guess);
+        if(cols[i].count() == 1) {
+            guessNumber(col_positions[i].first(), i, cols[i].first() + 1);
             return true;
         }
     }
     return false;
-}
-
-bool Sodoku::possibleColumn()
-{
-    for(int i=0; i<9; i++) {
-        int guess=onlyInColumn(i);
-        if(guess) {
-            guessNumber(col_positions[i].first(), i, guess);
-            return true;
-        }
-    }
-    return false;
-}
-
-void Sodoku::update()
-{
-    for(int i=0; i<9; ++i)
-    {
-        for(int k=0; k<9; ++k)
-        {
-            if(fields[i][k]!=0)
-            {
-                auto[outer, inner] = boxTransform(i, k);
-
-                row_positions[i].unset(k);
-                col_positions[k].unset(i);
-                box_positions[outer].unset(inner);
-                rows[i].unset(fields[i][k]-1);
-                cols[k].unset(fields[i][k]-1);
-                boxes[outer].unset(fields[i][k]-1);
-            }
-        }
-    }
 }
 
 bool Sodoku::isDone(){
@@ -277,15 +239,6 @@ bool Sodoku::isDone(){
         }
     }
     return true;
-}
-
-int Sodoku::onlyInColumn(int i)
-{
-    return cols[i].count() == 1 ? cols[i].first() + 1 : 0; 
-}
-
-int Sodoku::onlyInRow(int i) const {
-    return rows[i].count() == 1 ? rows[i].first() + 1 : 0;
 }
 
 Sodoku::Sodoku() {

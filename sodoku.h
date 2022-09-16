@@ -59,11 +59,6 @@ class Sodoku
         bool nowhereElseInBox();
 
         bool canGo(int i,int k, int value);
-        void update();
-
-        int onlyInBox(int i);
-        int onlyInRow(int i) const;
-        int onlyInColumn(int i);
 
         void guessNumber(int y, int x, int number) {
             if(!canGo(y, x, number)) {
