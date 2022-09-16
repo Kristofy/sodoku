@@ -369,37 +369,13 @@ int Sodoku::onlyInColumn(int i)
 
 int Sodoku::onlyInRow(int i) const
 {
-    const bitset& row = rows[i];
-
-    bool only=true;
-    int guess=0;
-    for(int k=0; k<9; ++k)
-    {
-        if(rows[i][k])
-        {
-            if(only)
-            {
-                guess=k+1;
-                only=false;
-            }
-            else
-            {
-                guess=0;
-                break;
-            }
-        }
-    }
-    return guess;
+    return rows[i].count() == 1 ? rows[i].first() + 1 : 0;
 }
 
 Sodoku::Sodoku()
 {
     for(int i=0; i<9; ++i)
-    {
-        rows[i]=0b111111111;
-        cols[i]=0b111111111;
-        boxes[i]=0b111111111;
-    }
+       rows[i]=cols[i]=boxes[i]=0b111111111;
 }
 
 Sodoku::Sodoku(string path)

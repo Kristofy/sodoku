@@ -21,13 +21,15 @@ struct fast_bitset {
         int getBits() const { return bits; }
         
         bool operator[](int i) const { return (bits&(1<<i)) != 0; }
+        bool any() const { return bits != 0; }
+        bool none() const { return bits == 0; }
 
         void set(int i) { bits |= 1<<i; }
         void unset(int i) { bits &= ~(1<<i); }
         void flip(int i) { bits ^= 1<<i; }
 
-        fast_bitset operator&(const fast_bitset& other) const { return bits & other.bits; }
 
+        fast_bitset operator&(const fast_bitset& other) const { return bits & other.bits; }
 };
 
 class Sodoku
