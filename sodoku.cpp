@@ -4,14 +4,18 @@ using namespace std;
 
 void Sodoku::solve()
 {
-    for(bool status = true; status; update())
-        status = possibleRow()
+    guessed = true;
+    while(guessed) {
+        update();
+        guessed = false;
+        guessed = possibleRow()
         || possibleColumn()
         || possibleBox()
         || onlyThere()
         || nowhereElseInRow()
         || nowhereElseInColumn()
         || nowhereElseInBox();
+    }
 }
 
 bool Sodoku::nowhereElseInRow()
@@ -40,7 +44,7 @@ bool Sodoku::nowhereElseInRow()
             }
             if(only==1)
             {
-                fields[i][index]=nums[j];
+                guessNumber(i, index, nums[j]);
                 return true;
             }
             only=0;
@@ -80,7 +84,7 @@ bool Sodoku::nowhereElseInBox()
             }
             if(only==1)
             {
-                fields[indexI][indexK]=nums[j];
+                guessNumber(indexI, indexK, nums[j]);
                 return true;
             }
             only=0;
@@ -116,7 +120,7 @@ bool Sodoku::nowhereElseInColumn()
             }
             if(only==1)
             {
-                fields[index][i]=nums[j];
+                guessNumber(index, i, nums[j]);
                 return true;
             }
             only=0;
@@ -208,7 +212,7 @@ bool Sodoku::onlyThere()
                     {
                         if(canGo(i,k,guess))
                         {
-                            fields[i][k]=guess;
+                            guessNumber(i, k, guess);
                             return true;
                         }
                     }
@@ -235,7 +239,7 @@ bool Sodoku::possibleBox()
                 ///I dont think so
                 if(fields[((i/3)*3)+k/3][((i%3)*3)+k%3]==0&&canGo((((i/3)*3)+k/3),((i%3)*3)+k%3,guess))
                 {
-                    fields[((i/3)*3)+k/3][((i%3)*3)+k%3]=guess;
+                    guessNumber(((i/3)*3)+k/3, ((i%3)*3)+k%3, guess);
                     return true;
                 }
             }
@@ -268,26 +272,14 @@ int Sodoku::onlyInBox(int i)
     return guess;
 }
 
+
 bool Sodoku::possibleRow()
 {
-    int guess;
-    for(int i=0; i<9; i++)
-    {
-        guess=onlyInRow(i);
-        if(guess)
-        {
-            for(int k=0; k<9; ++k)
-            {
-                ///I dont think so
-                if(fields[i][k]==0&&canGo(i,k,guess))
-                {
-                    fields[i][k]=guess;
-                    return true;
-                }
-            }
-        }
+    for(int i=0; i<9; i++) {
+        int guess=onlyInRow(i);
+        if(guess) guessNumber(i, row_positions[i].first(), guess);
     }
-    return false;
+    return guessed;
 }
 
 bool Sodoku::possibleColumn()
@@ -301,7 +293,7 @@ bool Sodoku::possibleColumn()
             for(int k=0; k<9; ++k){
                 if(fields[k][i]==0&&canGo(k,i,guess))
                 {
-                    fields[k][i]=guess;
+                    guessNumber(k, i, guess);
                     return true;
                 }
             }
@@ -318,6 +310,8 @@ void Sodoku::update()
         {
             if(fields[i][k]!=0)
             {
+                row_positions[i].unset(k);
+                col_positions[k].unset(i);
                 rows[i].unset(fields[i][k]-1);
                 cols[k].unset(fields[i][k]-1);
                 boxes[boxIndex(i,k)].unset(fields[i][k]-1);
@@ -367,25 +361,21 @@ int Sodoku::onlyInColumn(int i)
     return guess;
 }
 
-int Sodoku::onlyInRow(int i) const
-{
+int Sodoku::onlyInRow(int i) const {
+    cout << "in row: " << i << " there are: " << std::bitset<9>(rows[i].getBits()).to_string() << " so the ans is: " << (rows[i].count() == 1 ? rows[i].first() + 1 : 0) << std::endl;
     return rows[i].count() == 1 ? rows[i].first() + 1 : 0;
 }
 
-Sodoku::Sodoku()
-{
+Sodoku::Sodoku() {
     for(int i=0; i<9; ++i)
-       rows[i]=cols[i]=boxes[i]=0b111111111;
+       rows[i]=cols[i]=boxes[i]=row_positions[i]=col_positions[i]=0b111111111;
 }
 
 Sodoku::Sodoku(string path)
 {
     for(int i=0; i<9; ++i)
-    {
-        rows[i]=0b111111111;
-        cols[i]=0b111111111;
-        boxes[i]=0b111111111;
-    }
+        rows[i]=cols[i]=boxes[i]=row_positions[i]=col_positions[i]=0b111111111;
+
     ifstream fin(path);
     if(!fin.is_open())
     {
@@ -443,6 +433,7 @@ Sodoku::Sodoku(string path)
         }
     }
     fin.close();
+    update();
 }
 
 void Sodoku::printArray()

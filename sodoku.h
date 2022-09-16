@@ -18,6 +18,7 @@ struct fast_bitset {
 
         int count() const { return __builtin_popcount(bits); }
         int first() const { return __builtin_ctz(bits); }   
+
         int getBits() const { return bits; }
         
         bool operator[](int i) const { return (bits&(1<<i)) != 0; }
@@ -65,7 +66,26 @@ class Sodoku
         int onlyInRow(int i) const;
         int onlyInColumn(int i);
 
+        void guessNumber(int y, int x, int number) {
+            if(!canGo(y, x, number)) {
+                std::cerr << "Error! Number missplaced!" << std::endl;
+            }
+
+
+            fields[y][x] = number;
+            row_positions[y].unset(x);
+            col_positions[x].unset(y);
+            rows[y].set(number);
+            cols[x].set(number);
+            boxes[boxIndex(y, x)].set(number);
+
+            guessed = true;
+        }
+
+        bool guessed = false;
         int fields[9][9];
+        bitset row_positions[9];
+        bitset col_positions[9];
         bitset rows[9];
         bitset cols[9];
         bitset boxes[9];
